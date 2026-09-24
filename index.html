@@ -15,11 +15,25 @@
     --ink: #1a1c26;
     --muted: #5e6275;
     --line: #dfe1ea;
+    --surface: #ffffff;
+    --surface-alt: #e8ecf8;
+    --surface-border: #d4dbef;
+    --dot: #c9d3f0;
     --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
     --receipt: "Courier Prime", "Courier New", monospace;
   }
+  html.dark {
+    --paper: #12131c;
+    --ink: #f1f2fa;
+    --muted: #9a9dbd;
+    --line: #33364a;
+    --surface: #1c1e2b;
+    --surface-alt: #262940;
+    --surface-border: #33364a;
+    --dot: rgba(255,255,255,.06);
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--display); background-color: var(--paper); background-image: radial-gradient(#c9d3f0 1px, transparent 1px); background-size: 22px 22px; color: var(--ink); line-height: 1.5; }
+  body { font-family: var(--display); background-color: var(--paper); background-image: radial-gradient(var(--dot) 1px, transparent 1px); background-size: 22px 22px; color: var(--ink); line-height: 1.5; }
   button { font: inherit; cursor: pointer; }
   button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
 
@@ -27,7 +41,7 @@
   header {
     position: sticky; top: 0; z-index: 10;
     background: var(--cobalt); color: #fff;
-    display: flex; align-items: center; gap: 1rem;
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; row-gap: .5rem;
     padding: .9rem clamp(1rem, 4vw, 3rem);
   }
   .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -.02em; display: flex; align-items: center; gap: .4rem; }
@@ -35,8 +49,14 @@
   .search { flex: 1; max-width: 420px; margin-left: auto; }
   .search input {
     width: 100%; padding: .6rem .9rem; border: none; border-radius: 999px;
-    font: inherit; background: #fff; color: var(--ink);
+    font: inherit; background: #fff; color: #1a1c26;
   }
+  .icon-btn {
+    background: rgba(255,255,255,.15); color: #fff; border: none;
+    padding: .55rem .8rem; border-radius: 999px; font-size: 1rem;
+    display: flex; align-items: center; gap: .35rem; font-weight: 600;
+  }
+  .icon-btn:hover { background: rgba(255,255,255,.28); }
   .cart-btn {
     background: var(--sun); color: var(--cobalt-dark); border: none;
     padding: .55rem 1rem; border-radius: 999px; font-weight: 600;
@@ -66,31 +86,43 @@
     margin: -1.5rem clamp(1rem, 4vw, 3rem) 0; position: relative;
   }
   .cats button {
-    background: #fff; border: 2px solid var(--ink); color: var(--ink);
+    background: var(--surface); border: 2px solid var(--ink); color: var(--ink);
     padding: .5rem 1.1rem; border-radius: 999px; font-weight: 600;
   }
-  .cats button.active { background: var(--ink); color: #fff; }
+  .cats button.active { background: var(--cobalt); color: #fff; border-color: var(--cobalt); }
 
   /* Products */
   main { padding: 2rem clamp(1rem, 4vw, 3rem) 4rem; }
   .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; gap: 1rem; flex-wrap: wrap; }
   .toolbar h2 { font-size: 1.6rem; letter-spacing: -.02em; }
-  .toolbar select { padding: .45rem .7rem; border: 2px solid var(--line); border-radius: 8px; font: inherit; background: #fff; }
+  .toolbar-controls { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+  .toolbar select { padding: .45rem .7rem; border: 2px solid var(--line); border-radius: 8px; font: inherit; background: var(--surface); color: var(--ink); }
+  .price-filter { display: flex; align-items: center; gap: .6rem; font-size: .85rem; color: var(--muted); }
+  .price-filter input[type="range"] { accent-color: var(--cobalt); }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.25rem; }
-  .product { background: #fff; border: 2px solid #d4dbef; box-shadow: 0 6px 18px rgba(31, 63, 191, .08); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
-  .product .pic { aspect-ratio: 4 / 3; background: #e8ecf8; overflow: hidden; }
+  .product { background: var(--surface); border: 2px solid var(--surface-border); box-shadow: 0 6px 18px rgba(31, 63, 191, .08); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+  .product .pic { position: relative; aspect-ratio: 4 / 3; background: var(--surface-alt); overflow: hidden; cursor: pointer; }
   .product .pic img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .35s ease; }
   .product:hover .pic img { transform: scale(1.05); }
   .product .pic.noimg { font-size: 4.5rem; display: grid; place-items: center; }
-  .product .info { padding: 0 1rem 1rem; display: flex; flex-direction: column; gap: .25rem; flex: 1; }
-  .product h3 { font-size: 1.05rem; font-weight: 600; }
+  .disc-badge { position: absolute; top: .5rem; left: .5rem; background: #1d8a4e; color: #fff; font-size: .68rem; font-weight: 700; padding: .18rem .5rem; border-radius: 999px; }
+  .wish { position: absolute; top: .4rem; right: .4rem; width: 2rem; height: 2rem; border-radius: 50%; border: none; background: rgba(255,255,255,.88); color: #b3261e; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
+  .wish.active { background: #b3261e; color: #fff; }
+  .product .info { padding: 0 1rem 1rem; display: flex; flex-direction: column; gap: .3rem; flex: 1; }
+  .product h3 { font-size: 1.05rem; font-weight: 600; cursor: pointer; }
   .product .cat { color: var(--muted); font-size: .85rem; }
+  .rating { font-size: .8rem; color: #d99a00; display: flex; align-items: center; gap: .3rem; }
+  .rating .rc { color: var(--muted); }
+  .stock { font-size: .78rem; font-weight: 600; }
+  .stock.low { color: #c9720b; }
+  .stock.out { color: #b3261e; }
   .product .row { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: .6rem; }
   .price { font-weight: 800; font-size: 1.2rem; }
   .price s { color: var(--muted); font-weight: 400; font-size: .85rem; margin-left: .3rem; }
   .add { background: var(--cobalt); color: #fff; border: none; padding: .45rem .9rem; border-radius: 999px; font-weight: 600; }
   .add:hover { background: var(--cobalt-dark); }
   .add.added { background: #1d8a4e; }
+  .add[disabled] { opacity: .5; cursor: not-allowed; }
   .empty { grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--muted); }
 
   /* Cart drawer — styled like a till receipt */
@@ -107,7 +139,7 @@
   .drawer-head h2 { font-size: 1.4rem; }
   .close { background: none; border: none; color: #fff; font-size: 1.8rem; line-height: 1; }
   .receipt {
-    background: #fff; font-family: var(--receipt); padding: 1.2rem 1.1rem 1.6rem;
+    background: var(--surface); font-family: var(--receipt); padding: 1.2rem 1.1rem 1.6rem;
     flex: 1; overflow-y: auto; position: relative;
     -webkit-mask: radial-gradient(circle 7px at 50% 100%, transparent 98%, #000) 50% 100% / 18px 100% repeat-x;
             mask: radial-gradient(circle 7px at 50% 100%, transparent 98%, #000) 50% 100% / 18px 100% repeat-x;
@@ -116,8 +148,19 @@
   .receipt .date { text-align: center; font-size: .8rem; color: var(--muted); border-bottom: 2px dashed var(--ink); padding-bottom: .7rem; margin-bottom: .7rem; }
   .line { display: grid; grid-template-columns: 1fr auto; gap: .2rem .5rem; padding: .5rem 0; border-bottom: 1px dotted var(--line); font-size: .9rem; }
   .qty { display: flex; align-items: center; gap: .4rem; }
-  .qty button { width: 1.6rem; height: 1.6rem; border: 1.5px solid var(--ink); background: #fff; border-radius: 4px; font-family: var(--receipt); font-weight: 700; }
+  .qty button { width: 1.6rem; height: 1.6rem; border: 1.5px solid var(--ink); background: var(--surface); color: var(--ink); border-radius: 4px; font-family: var(--receipt); font-weight: 700; }
   .remove { background: none; border: none; color: #b3261e; font-family: var(--receipt); font-size: .8rem; text-decoration: underline; justify-self: end; }
+  .coupon { margin: .9rem 0; }
+  .coupon-form { display: flex; gap: .4rem; }
+  .coupon-form input { flex: 1; padding: .45rem .6rem; border: 1.5px solid var(--ink); border-radius: 6px; font-family: var(--receipt); font-size: .85rem; background: var(--surface); color: var(--ink); }
+  .coupon-form button { background: var(--ink); color: var(--surface); border: none; padding: .45rem .8rem; border-radius: 6px; font-weight: 700; font-size: .8rem; }
+  .coupon-applied { display: flex; justify-content: space-between; align-items: center; background: #e6f6ec; color: #1d8a4e; padding: .45rem .6rem; border-radius: 6px; font-size: .85rem; font-weight: 700; }
+  .coupon-applied button { background: none; border: none; color: #1d8a4e; font-weight: 700; font-size: 1rem; }
+  .coupon-msg { font-size: .78rem; margin-top: .3rem; }
+  .coupon-msg.ok { color: #1d8a4e; }
+  .coupon-msg.err { color: #b3261e; }
+  .coupon-hint { font-size: .72rem; color: var(--muted); margin-top: .3rem; }
+  .discount-row { color: #1d8a4e; }
   .totals { border-top: 2px dashed var(--ink); margin-top: .8rem; padding-top: .7rem; font-size: .9rem; }
   .totals div { display: flex; justify-content: space-between; }
   .totals .grand { font-weight: 700; font-size: 1.15rem; margin-top: .3rem; }
@@ -128,18 +171,69 @@
   }
   .checkout:disabled { opacity: .5; cursor: not-allowed; }
 
+  /* Generic modal (quick view / checkout / orders / wishlist) */
+  .modal { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 22; opacity: 0; pointer-events: none; transition: opacity .25s; padding: 1rem; }
+  .modal.open { opacity: 1; pointer-events: auto; }
+  .modal-box { background: var(--surface); color: var(--ink); border-radius: 16px; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 1.6rem; position: relative; transform: translateY(14px); transition: transform .25s; }
+  .modal.open .modal-box { transform: translateY(0); }
+  .modal-close { position: absolute; top: .8rem; right: .8rem; background: none; border: none; font-size: 1.7rem; line-height: 1; color: var(--muted); }
+  .modal-box h2 { font-size: 1.35rem; margin-bottom: .8rem; }
+
+  .qv-pic { aspect-ratio: 16/10; background: var(--surface-alt); border-radius: 12px; overflow: hidden; margin-bottom: 1rem; }
+  .qv-pic img { width: 100%; height: 100%; object-fit: cover; }
+  .qv-desc { color: var(--muted); font-size: .92rem; margin: .5rem 0 .8rem; }
+  .qv-actions { display: flex; align-items: center; gap: .8rem; margin-top: .8rem; }
+  .qty-stepper { display: flex; align-items: center; gap: .6rem; border: 1.5px solid var(--line); border-radius: 999px; padding: .3rem .8rem; }
+  .qty-stepper button { background: none; border: none; font-size: 1.1rem; font-weight: 700; color: var(--ink); }
+  .wish-link { display: block; margin-top: .8rem; background: none; border: none; color: #b3261e; font-weight: 600; font-size: .88rem; }
+
+  .co-steps { display: flex; gap: 1rem; margin-bottom: 1.1rem; font-size: .8rem; color: var(--muted); font-weight: 600; }
+  .co-steps span.active { color: var(--cobalt); }
+  .co-form { display: flex; flex-direction: column; gap: .7rem; margin: .6rem 0; }
+  .co-form label { font-size: .85rem; font-weight: 600; display: flex; flex-direction: column; gap: .3rem; }
+  .co-form input { padding: .55rem .7rem; border: 1.5px solid var(--line); border-radius: 8px; font: inherit; background: var(--surface); color: var(--ink); }
+  .co-row { display: flex; gap: .7rem; }
+  .co-row label { flex: 1; }
+  .co-error { color: #b3261e; font-size: .82rem; margin-top: -.2rem; }
+  .co-actions { display: flex; gap: .6rem; justify-content: flex-end; margin-top: 1.1rem; }
+  .co-actions button { padding: .6rem 1.2rem; border-radius: 999px; font-weight: 700; border: none; }
+  .co-actions .primary { background: var(--cobalt); color: #fff; }
+  .co-actions .secondary { background: none; border: 1.5px solid var(--line); color: var(--ink); }
+  .pay-option { display: flex; align-items: center; gap: .6rem; padding: .7rem .8rem; border: 1.5px solid var(--line); border-radius: 10px; margin-bottom: .6rem; cursor: pointer; }
+  .pay-option input { accent-color: var(--cobalt); }
+  .review-block { background: var(--surface-alt); border-radius: 10px; padding: .8rem .9rem; margin-bottom: .8rem; font-size: .9rem; }
+  .review-block h4 { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-bottom: .4rem; }
+  .review-line { display: flex; justify-content: space-between; font-size: .88rem; padding: .15rem 0; }
+  .confirm { text-align: center; padding: .6rem 0; }
+  .confirm .big-check { font-size: 3rem; }
+  .confirm h2 { margin: .6rem 0 .3rem; border: none; }
+  .confirm .oid { font-family: var(--receipt); color: var(--muted); margin-bottom: 1rem; }
+
+  .order-card { border: 1.5px solid var(--line); border-radius: 10px; padding: .8rem .9rem; margin-bottom: .7rem; font-size: .88rem; }
+  .order-head { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: .4rem; }
+  .order-items div { color: var(--muted); font-size: .85rem; }
+  .order-total { margin-top: .5rem; font-weight: 700; }
+
+  .wish-row { display: flex; align-items: center; gap: .7rem; padding: .6rem 0; border-bottom: 1px dotted var(--line); }
+  .wish-row img, .wish-row .wr-icon { width: 48px; height: 48px; object-fit: cover; border-radius: 8px; background: var(--surface-alt); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+  .wr-info { flex: 1; }
+  .wr-info .wr-price { font-weight: 700; font-size: .9rem; }
+  .wr-actions { display: flex; flex-direction: column; gap: .35rem; }
+  .wr-actions button { font-size: .76rem; padding: .35rem .7rem; border-radius: 999px; }
+  .wr-add { background: var(--cobalt); color: #fff; border: none; }
+  .wr-remove { background: none; border: 1.5px solid #b3261e; color: #b3261e; }
+
   /* Toast */
   .toast {
     position: fixed; bottom: 1.5rem; left: 50%; transform: translate(-50%, 150%);
-    background: var(--ink); color: #fff; padding: .7rem 1.2rem; border-radius: 999px;
+    background: var(--ink); color: var(--paper); padding: .7rem 1.2rem; border-radius: 999px;
     transition: transform .25s; z-index: 30; font-weight: 600;
   }
   .toast.show { transform: translate(-50%, 0); }
 
-  footer { background: var(--ink); color: #c9cbd6; text-align: center; padding: 1.5rem; font-size: .9rem; }
+  footer { background: #1a1c26; color: #c9cbd6; text-align: center; padding: 1.5rem; font-size: .9rem; }
 
   @media (max-width: 700px) {
-    header { flex-wrap: wrap; }
     .search { order: 3; max-width: none; flex-basis: 100%; }
     .cart-btn { margin-left: auto; }
     .hero { grid-template-columns: 1fr; }
@@ -157,6 +251,9 @@
   <div class="search">
     <input type="search" id="search" placeholder="Search products" aria-label="Search products">
   </div>
+  <button class="icon-btn" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+  <button class="icon-btn" id="openWishlist" aria-label="Open wishlist">♥ <span class="badge" id="wishCount">0</span></button>
+  <button class="icon-btn" id="openOrders" aria-label="View past orders">📦 Orders</button>
   <button class="cart-btn" id="openCart" aria-label="Open cart">
     Cart <span class="badge" id="count">0</span>
   </button>
@@ -176,12 +273,19 @@
 <main id="products">
   <div class="toolbar">
     <h2 id="heading">All products</h2>
-    <select id="sort" aria-label="Sort products">
-      <option value="default">Sort: Featured</option>
-      <option value="low">Price: low to high</option>
-      <option value="high">Price: high to low</option>
-      <option value="name">Name: A to Z</option>
-    </select>
+    <div class="toolbar-controls">
+      <div class="price-filter">
+        <label for="priceRange">Up to <span id="priceVal"></span></label>
+        <input type="range" id="priceRange" min="0" step="50">
+      </div>
+      <select id="sort" aria-label="Sort products">
+        <option value="default">Sort: Featured</option>
+        <option value="low">Price: low to high</option>
+        <option value="high">Price: high to low</option>
+        <option value="name">Name: A to Z</option>
+        <option value="rating">Rating: high to low</option>
+      </select>
+    </div>
   </div>
   <div class="grid" id="grid"></div>
 </main>
@@ -189,6 +293,7 @@
 <footer>© 2026 Shopping Kart. Made with HTML, CSS and JavaScript.</footer>
 
 <div class="overlay" id="overlay"></div>
+
 <aside class="drawer" id="drawer" aria-label="Your cart">
   <div class="drawer-head">
     <h2>Your cart</h2>
@@ -198,44 +303,150 @@
   <button class="checkout" id="checkout">Place order</button>
 </aside>
 
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="modal-box" id="modalBox"></div>
+</div>
+
 <div class="toast" id="toast" role="status"></div>
 
 <script>
   const products = [
-    { id: 1,  name: "Fresh Bananas (1 dozen)", cat: "Groceries",   price: 60,    mrp: 75,    icon: "🍌", img: "images/bananas.jpg" },
-    { id: 2,  name: "Red Apples (1 kg)",       cat: "Groceries",   price: 180,   mrp: 220,   icon: "🍎", img: "images/apples.jpg" },
-    { id: 3,  name: "Whole Wheat Bread",       cat: "Groceries",   price: 45,    mrp: 50,    icon: "🍞", img: "images/bread.jpg" },
-    { id: 4,  name: "Farm Eggs (12 pack)",     cat: "Groceries",   price: 90,    mrp: 96,    icon: "🥚", img: "images/eggs.jpg" },
-    { id: 5,  name: "Wireless Headphones",     cat: "Electronics", price: 1999,  mrp: 3499,  icon: "🎧", img: "images/headphones.jpg" },
-    { id: 6,  name: "Smartphone",              cat: "Electronics", price: 14999, mrp: 17999, icon: "📱", img: "images/smartphone.jpg" },
-    { id: 7,  name: "Laptop",                  cat: "Electronics", price: 45999, mrp: 52999, icon: "💻", img: "images/laptop.jpg" },
-    { id: 8,  name: "Smart Watch",             cat: "Electronics", price: 2499,  mrp: 4999,  icon: "⌚", img: "images/smartwatch.jpg" },
-    { id: 9,  name: "Cotton T-Shirt",          cat: "Fashion",     price: 399,   mrp: 799,   icon: "👕", img: "images/tshirt.jpg" },
-    { id: 10, name: "Denim Jeans",             cat: "Fashion",     price: 999,   mrp: 1799,  icon: "👖", img: "images/jeans.jpg" },
-    { id: 11, name: "Running Shoes",           cat: "Fashion",     price: 1499,  mrp: 2999,  icon: "👟", img: "images/shoes.jpg" },
-    { id: 12, name: "Backpack",                cat: "Fashion",     price: 799,   mrp: 1299,  icon: "🎒", img: "images/backpack.jpg" },
-    { id: 13, name: "Coffee Mug",              cat: "Home",        price: 249,   mrp: 349,   icon: "☕", img: "images/mug.jpg" },
-    { id: 14, name: "Table Lamp",              cat: "Home",        price: 699,   mrp: 999,   icon: "💡", img: "images/lamp.jpg" },
-    { id: 15, name: "Indoor Plant",            cat: "Home",        price: 349,   mrp: 449,   icon: "🪴", img: "images/plant.jpg" },
-    { id: 16, name: "Wall Clock",              cat: "Home",        price: 549,   mrp: 799,   icon: "🕰️", img: "images/clock.jpg" }
+    { id: 1,  name: "Fresh Bananas (1 dozen)", cat: "Groceries",   price: 60,    mrp: 75,    icon: "🍌", img: "images/bananas.jpg",     desc: "Naturally ripened, sweet Cavendish bananas — great for breakfast or a quick snack.", rating: 4.3, reviews: 212, stock: 40 },
+    { id: 2,  name: "Red Apples (1 kg)",       cat: "Groceries",   price: 180,   mrp: 220,   icon: "🍎", img: "images/apples.jpg",      desc: "Crisp and juicy Kashmiri red apples, hand-picked for freshness.", rating: 4.5, reviews: 189, stock: 35 },
+    { id: 3,  name: "Whole Wheat Bread",       cat: "Groceries",   price: 45,    mrp: 50,    icon: "🍞", img: "images/bread.jpg",       desc: "Soft whole wheat bread baked daily, with no added preservatives.", rating: 4.1, reviews: 98,  stock: 25 },
+    { id: 4,  name: "Farm Eggs (12 pack)",     cat: "Groceries",   price: 90,    mrp: 96,    icon: "🥚", img: "images/eggs.jpg",        desc: "Farm-fresh eggs from free-range hens, rich in protein.", rating: 4.6, reviews: 143, stock: 5  },
+    { id: 5,  name: "Wireless Headphones",     cat: "Electronics", price: 1999,  mrp: 3499,  icon: "🎧", img: "images/headphones.jpg",  desc: "Over-ear wireless headphones with 30-hour battery life and active noise cancellation.", rating: 4.4, reviews: 876, stock: 18 },
+    { id: 6,  name: "Smartphone",              cat: "Electronics", price: 14999, mrp: 17999, icon: "📱", img: "images/smartphone.jpg",  desc: "6.5-inch display, 128GB storage, triple camera setup with fast charging.", rating: 4.2, reviews: 1204, stock: 7 },
+    { id: 7,  name: "Laptop",                  cat: "Electronics", price: 45999, mrp: 52999, icon: "💻", img: "images/laptop.jpg",      desc: "14-inch ultrabook with 16GB RAM and 512GB SSD, built for work and play.", rating: 4.7, reviews: 432, stock: 3 },
+    { id: 8,  name: "Smart Watch",             cat: "Electronics", price: 2499,  mrp: 4999,  icon: "⌚", img: "images/smartwatch.jpg",  desc: "Track your steps, heart rate and sleep with a week-long battery life.", rating: 4.0, reviews: 356, stock: 22 },
+    { id: 9,  name: "Cotton T-Shirt",          cat: "Fashion",     price: 399,   mrp: 799,   icon: "👕", img: "images/tshirt.jpg",      desc: "100% cotton crew-neck t-shirt, breathable and machine washable.", rating: 4.3, reviews: 540, stock: 60 },
+    { id: 10, name: "Denim Jeans",             cat: "Fashion",     price: 999,   mrp: 1799,  icon: "👖", img: "images/jeans.jpg",       desc: "Slim-fit stretch denim jeans that move with you.", rating: 4.1, reviews: 289, stock: 0 },
+    { id: 11, name: "Running Shoes",           cat: "Fashion",     price: 1499,  mrp: 2999,  icon: "👟", img: "images/shoes.jpg",       desc: "Lightweight running shoes with cushioned soles for everyday training.", rating: 4.5, reviews: 678, stock: 15 },
+    { id: 12, name: "Backpack",                cat: "Fashion",     price: 799,   mrp: 1299,  icon: "🎒", img: "images/backpack.jpg",    desc: "Water-resistant backpack with a padded laptop sleeve and multiple pockets.", rating: 4.4, reviews: 210, stock: 30 },
+    { id: 13, name: "Coffee Mug",              cat: "Home",        price: 249,   mrp: 349,   icon: "☕", img: "images/mug.jpg",         desc: "Ceramic coffee mug that keeps your drink hot for longer, dishwasher safe.", rating: 4.2, reviews: 76,  stock: 50 },
+    { id: 14, name: "Table Lamp",              cat: "Home",        price: 699,   mrp: 999,   icon: "💡", img: "images/lamp.jpg",        desc: "Adjustable table lamp with warm and cool light modes.", rating: 4.0, reviews: 64,  stock: 12 },
+    { id: 15, name: "Indoor Plant",            cat: "Home",        price: 349,   mrp: 449,   icon: "🪴", img: "images/plant.jpg",       desc: "Low-maintenance indoor plant that purifies the air, comes in a ceramic pot.", rating: 4.6, reviews: 152, stock: 20 },
+    { id: 16, name: "Wall Clock",              cat: "Home",        price: 549,   mrp: 799,   icon: "🕰️", img: "images/clock.jpg",       desc: "Silent-sweep wall clock with a minimalist wooden frame.", rating: 3.9, reviews: 41,  stock: 16 }
   ];
+
+  const COUPONS = {
+    SAVE10:    { type: "percent", value: 10, label: "10% off your order" },
+    WELCOME15: { type: "percent", value: 15, maxDiscount: 300, label: "15% off, up to ₹300" },
+    FLAT50:    { type: "flat",    value: 50, minSubtotal: 500, label: "₹50 off orders over ₹500" }
+  };
 
   const DELIVERY_FREE_ABOVE = 999;
   const DELIVERY_FEE = 49;
+  const MAX_PRICE = Math.ceil(Math.max(...products.map(p => p.price)) / 1000) * 1000;
 
   let activeCat = "All";
+  let priceFilter = MAX_PRICE;
   let cart = loadCart();
+  let wishlist = loadWishlist();
+  let appliedCoupon = loadCoupon();
+  let orders = loadOrders();
+  let theme = loadTheme();
+
+  let couponMsg = null, couponMsgType = null;
+  let currentModalType = null;
+  let currentQVId = null, qvQty = 1;
+  let checkoutStep = 1, checkoutData = null, coError = null, lastOrder = null;
 
   const $ = id => document.getElementById(id);
   const rupees = n => "₹" + n.toLocaleString("en-IN");
+  const starsHtml = r => {
+    const full = Math.round(r);
+    return "★".repeat(full) + "☆".repeat(5 - full);
+  };
 
-  // ---- Save cart in the browser so it survives a page refresh ----
+  // ---- Persistence helpers (all backed by localStorage) ----
   function loadCart() {
     try { return JSON.parse(localStorage.getItem("shoppingKart")) || {}; }
     catch (e) { return {}; }
   }
   function saveCart() {
     try { localStorage.setItem("shoppingKart", JSON.stringify(cart)); } catch (e) {}
+  }
+  function loadWishlist() {
+    try { return new Set(JSON.parse(localStorage.getItem("shoppingKartWishlist")) || []); }
+    catch (e) { return new Set(); }
+  }
+  function saveWishlist() {
+    try { localStorage.setItem("shoppingKartWishlist", JSON.stringify([...wishlist])); } catch (e) {}
+  }
+  function loadCoupon() {
+    try { return localStorage.getItem("shoppingKartCoupon") || null; } catch (e) { return null; }
+  }
+  function saveCoupon() {
+    try {
+      if (appliedCoupon) localStorage.setItem("shoppingKartCoupon", appliedCoupon);
+      else localStorage.removeItem("shoppingKartCoupon");
+    } catch (e) {}
+  }
+  function loadOrders() {
+    try { return JSON.parse(localStorage.getItem("shoppingKartOrders")) || []; }
+    catch (e) { return []; }
+  }
+  function saveOrders() {
+    try { localStorage.setItem("shoppingKartOrders", JSON.stringify(orders)); } catch (e) {}
+  }
+  function loadTheme() {
+    try { return localStorage.getItem("shoppingKartTheme") || "light"; } catch (e) { return "light"; }
+  }
+  function saveTheme() {
+    try { localStorage.setItem("shoppingKartTheme", theme); } catch (e) {}
+  }
+
+  function applyTheme() {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    $("themeToggle").textContent = theme === "dark" ? "☀️" : "🌙";
+  }
+  $("themeToggle").addEventListener("click", () => {
+    theme = theme === "dark" ? "light" : "dark";
+    saveTheme();
+    applyTheme();
+  });
+
+  function cartSubtotal() {
+    return Object.keys(cart).reduce((sum, id) => {
+      const p = products.find(x => x.id === Number(id));
+      return sum + (p ? p.price * cart[id] : 0);
+    }, 0);
+  }
+  function calcDiscount(subtotal) {
+    if (!appliedCoupon) return 0;
+    const c = COUPONS[appliedCoupon];
+    if (!c) return 0;
+    if (c.minSubtotal && subtotal < c.minSubtotal) return 0;
+    let d = c.type === "percent" ? Math.round(subtotal * c.value / 100) : c.value;
+    if (c.maxDiscount) d = Math.min(d, c.maxDiscount);
+    return Math.min(d, subtotal);
+  }
+  function addToCart(id, qty = 1) {
+    const p = products.find(x => x.id === id);
+    if (!p) return false;
+    const cur = cart[id] || 0;
+    const canAdd = Math.min(qty, Math.max(p.stock - cur, 0));
+    if (canAdd <= 0) return false;
+    cart[id] = cur + canAdd;
+    saveCart();
+    renderCart();
+    return true;
+  }
+  function toggleWishlist(id) {
+    if (wishlist.has(id)) wishlist.delete(id); else wishlist.add(id);
+    saveWishlist();
+    $("wishCount").textContent = wishlist.size;
+  }
+  function bumpBadge() {
+    const badge = $("count");
+    badge.classList.remove("bump"); void badge.offsetWidth; badge.classList.add("bump");
+  }
+  function showToast(msg) {
+    const t = $("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2500);
   }
 
   // ---- Category buttons ----
@@ -257,47 +468,79 @@
     const q = $("search").value.trim().toLowerCase();
     let list = products.filter(p =>
       (activeCat === "All" || p.cat === activeCat) &&
+      p.price <= priceFilter &&
       p.name.toLowerCase().includes(q)
     );
     const sort = $("sort").value;
-    if (sort === "low")  list.sort((a, b) => a.price - b.price);
-    if (sort === "high") list.sort((a, b) => b.price - a.price);
-    if (sort === "name") list.sort((a, b) => a.name.localeCompare(b.name));
+    if (sort === "low")    list.sort((a, b) => a.price - b.price);
+    if (sort === "high")   list.sort((a, b) => b.price - a.price);
+    if (sort === "name")   list.sort((a, b) => a.name.localeCompare(b.name));
+    if (sort === "rating") list.sort((a, b) => b.rating - a.rating);
 
     $("heading").textContent = activeCat === "All" ? "All products" : activeCat;
 
     if (list.length === 0) {
-      $("grid").innerHTML = `<p class="empty">No products match "${q}". Try another word or pick a different category.</p>`;
+      $("grid").innerHTML = `<p class="empty">No products match "${q}". Try another word, a wider price range, or a different category.</p>`;
       return;
     }
-    $("grid").innerHTML = list.map(p => `
+    $("grid").innerHTML = list.map(p => {
+      const discPct = Math.round((1 - p.price / p.mrp) * 100);
+      const inWish = wishlist.has(p.id);
+      let stockLine = "";
+      if (p.stock <= 0) stockLine = `<div class="stock out">Out of stock</div>`;
+      else if (p.stock <= 5) stockLine = `<div class="stock low">Only ${p.stock} left</div>`;
+      return `
       <article class="product">
-        <div class="pic"><img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.parentNode.classList.add('noimg'); this.parentNode.textContent='${p.icon}'"></div>
+        <div class="pic" data-open="${p.id}">
+          <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.parentNode.classList.add('noimg'); this.parentNode.textContent='${p.icon}'">
+          ${discPct > 0 ? `<span class="disc-badge">-${discPct}%</span>` : ""}
+          <button class="wish ${inWish ? "active" : ""}" data-id="${p.id}" aria-label="Toggle wishlist">${inWish ? "♥" : "♡"}</button>
+        </div>
         <div class="info">
-          <h3>${p.name}</h3>
+          <h3 data-open="${p.id}">${p.name}</h3>
           <span class="cat">${p.cat}</span>
+          <div class="rating">${starsHtml(p.rating)} <span class="rc">${p.rating.toFixed(1)} (${p.reviews})</span></div>
+          ${stockLine}
           <div class="row">
             <span class="price">${rupees(p.price)}<s>${rupees(p.mrp)}</s></span>
-            <button class="add" data-id="${p.id}">Add</button>
+            <button class="add" data-id="${p.id}" ${p.stock <= 0 ? "disabled" : ""}>${p.stock <= 0 ? "Sold out" : "Add"}</button>
           </div>
         </div>
-      </article>`).join("");
+      </article>`;
+    }).join("");
   }
   $("search").addEventListener("input", renderProducts);
   $("sort").addEventListener("change", renderProducts);
+  $("priceRange").min = 0;
+  $("priceRange").max = MAX_PRICE;
+  $("priceRange").value = MAX_PRICE;
+  $("priceVal").textContent = rupees(MAX_PRICE);
+  $("priceRange").addEventListener("input", e => {
+    priceFilter = Number(e.target.value);
+    $("priceVal").textContent = priceFilter >= MAX_PRICE ? rupees(MAX_PRICE) + "+" : rupees(priceFilter);
+    renderProducts();
+  });
 
   $("grid").addEventListener("click", e => {
-    const btn = e.target.closest(".add");
-    if (!btn) return;
-    const id = Number(btn.dataset.id);
-    cart[id] = (cart[id] || 0) + 1;
-    saveCart();
-    renderCart();
-    btn.textContent = "Added ✓";
-    btn.classList.add("added");
-    setTimeout(() => { btn.textContent = "Add"; btn.classList.remove("added"); }, 900);
-    const badge = $("count");
-    badge.classList.remove("bump"); void badge.offsetWidth; badge.classList.add("bump");
+    const wishBtn = e.target.closest(".wish");
+    if (wishBtn) {
+      toggleWishlist(Number(wishBtn.dataset.id));
+      renderProducts();
+      return;
+    }
+    const addBtn = e.target.closest(".add");
+    if (addBtn) {
+      const id = Number(addBtn.dataset.id);
+      const ok = addToCart(id, 1);
+      if (!ok) { showToast("Sorry, that item is out of stock."); return; }
+      addBtn.textContent = "Added ✓";
+      addBtn.classList.add("added");
+      setTimeout(() => { addBtn.textContent = "Add"; addBtn.classList.remove("added"); }, 900);
+      bumpBadge();
+      return;
+    }
+    const openBtn = e.target.closest("[data-open]");
+    if (openBtn) { openModal("quickview", Number(openBtn.dataset.open)); }
   });
 
   // ---- Cart (receipt) ----
@@ -334,12 +577,24 @@
         </div>`;
     });
 
+    html += `<div class="coupon">`;
+    if (appliedCoupon && COUPONS[appliedCoupon]) {
+      html += `<div class="coupon-applied">🏷 ${appliedCoupon} applied <button data-act="removecoupon" aria-label="Remove coupon">✕</button></div>`;
+    } else {
+      html += `<div class="coupon-form"><input type="text" id="couponInput" placeholder="Coupon code"><button data-act="applycoupon">Apply</button></div>
+                <div class="coupon-hint">Try SAVE10, WELCOME15 or FLAT50</div>`;
+    }
+    if (couponMsg) html += `<div class="coupon-msg ${couponMsgType}">${couponMsg}</div>`;
+    html += `</div>`;
+
+    const discount = calcDiscount(subtotal);
     const delivery = subtotal >= DELIVERY_FREE_ABOVE ? 0 : DELIVERY_FEE;
     html += `
       <div class="totals">
         <div><span>Items (${itemCount})</span><span>${rupees(subtotal)}</span></div>
+        ${discount > 0 ? `<div class="discount-row"><span>Discount (${appliedCoupon})</span><span>−${rupees(discount)}</span></div>` : ""}
         <div><span>Delivery</span><span>${delivery === 0 ? "FREE" : rupees(delivery)}</span></div>
-        <div class="grand"><span>TOTAL</span><span>${rupees(subtotal + delivery)}</span></div>
+        <div class="grand"><span>TOTAL</span><span>${rupees(subtotal - discount + delivery)}</span></div>
       </div>`;
     $("receipt").innerHTML = html;
     $("checkout").disabled = false;
@@ -348,41 +603,327 @@
   $("receipt").addEventListener("click", e => {
     const { act, id } = e.target.dataset;
     if (!act) return;
-    if (act === "inc") cart[id]++;
+    if (act === "inc") {
+      const p = products.find(x => x.id === Number(id));
+      if (cart[id] >= p.stock) { showToast("No more stock available."); return; }
+      cart[id]++;
+    }
     if (act === "dec") cart[id]--;
     if (act === "del" || cart[id] <= 0) delete cart[id];
+    if (act === "applycoupon") {
+      const raw = ($("couponInput")?.value || "").trim().toUpperCase();
+      if (!raw) { couponMsg = "Enter a coupon code."; couponMsgType = "err"; renderCart(); return; }
+      const c = COUPONS[raw];
+      const subtotalNow = cartSubtotal();
+      if (!c) { couponMsg = "That coupon code isn't valid."; couponMsgType = "err"; }
+      else if (c.minSubtotal && subtotalNow < c.minSubtotal) { couponMsg = `Add ${rupees(c.minSubtotal - subtotalNow)} more to use ${raw}.`; couponMsgType = "err"; }
+      else { appliedCoupon = raw; couponMsg = `"${raw}" applied — ${c.label}.`; couponMsgType = "ok"; }
+      saveCoupon();
+      renderCart();
+      return;
+    }
+    if (act === "removecoupon") { appliedCoupon = null; couponMsg = null; saveCoupon(); renderCart(); return; }
     saveCart();
     renderCart();
   });
 
   // ---- Open / close drawer ----
-  function openCart()  { $("drawer").classList.add("open");    $("overlay").classList.add("open"); }
+  function openCart()  { closeModal(); $("drawer").classList.add("open");    $("overlay").classList.add("open"); }
   function closeCart() { $("drawer").classList.remove("open"); $("overlay").classList.remove("open"); }
   $("openCart").addEventListener("click", openCart);
   $("closeCart").addEventListener("click", closeCart);
-  $("overlay").addEventListener("click", closeCart);
-  document.addEventListener("keydown", e => { if (e.key === "Escape") closeCart(); });
+  $("openWishlist").addEventListener("click", () => openModal("wishlist"));
+  $("openOrders").addEventListener("click", () => openModal("orders"));
+  $("overlay").addEventListener("click", () => { closeCart(); closeModal(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") { closeCart(); closeModal(); } });
 
-  // ---- Checkout ----
   $("checkout").addEventListener("click", () => {
-    cart = {};
-    saveCart();
-    renderCart();
+    if (Object.keys(cart).length === 0) return;
     closeCart();
-    showToast("Order placed! Thanks for shopping with Shopping Kart.");
+    checkoutStep = 1;
+    coError = null;
+    checkoutData = checkoutData || { name: "", phone: "", address: "", city: "", pincode: "", payment: "COD" };
+    openModal("checkout");
   });
 
-  function showToast(msg) {
-    const t = $("toast");
-    t.textContent = msg;
-    t.classList.add("show");
-    setTimeout(() => t.classList.remove("show"), 2500);
+  // ---- Generic modal ----
+  function openModal(type, id) {
+    currentModalType = type;
+    closeCart();
+    if (type === "quickview") { currentQVId = id; qvQty = 1; renderQuickView(); }
+    else if (type === "checkout") { renderCheckoutStep(); }
+    else if (type === "orders") { renderOrders(); }
+    else if (type === "wishlist") { renderWishlist(); }
+    $("overlay").classList.add("open");
+    $("modal").classList.add("open");
+  }
+  function closeModal() {
+    $("overlay").classList.remove("open");
+    $("modal").classList.remove("open");
+    currentModalType = null;
+  }
+  $("modal").addEventListener("click", e => {
+    const el = e.target.closest("[data-action]");
+    if (!el) return;
+    const action = el.dataset.action;
+    if (action === "close") { closeModal(); return; }
+    if (currentModalType === "quickview") handleQuickViewAction(action);
+    else if (currentModalType === "checkout") handleCheckoutAction(action);
+    else if (currentModalType === "wishlist") handleWishlistAction(action, el);
+    else if (currentModalType === "orders") { /* no interactive rows yet */ }
+  });
+
+  // ---- Quick view ----
+  function renderQuickView() {
+    const p = products.find(x => x.id === currentQVId);
+    if (!p) { closeModal(); return; }
+    qvQty = Math.max(1, Math.min(qvQty, p.stock || 1));
+    const inWish = wishlist.has(p.id);
+    let stockLine = "";
+    if (p.stock <= 0) stockLine = `<div class="stock out">Out of stock</div>`;
+    else if (p.stock <= 5) stockLine = `<div class="stock low">Only ${p.stock} left</div>`;
+    $("modalBox").innerHTML = `
+      <button class="modal-close" data-action="close" aria-label="Close">×</button>
+      <div class="qv-pic"><img src="${p.img}" alt="${p.name}" onerror="this.parentNode.textContent='${p.icon}'; this.parentNode.style.fontSize='4rem'; this.parentNode.style.display='grid'; this.parentNode.style.placeItems='center';"></div>
+      <h2>${p.name}</h2>
+      <div class="rating">${starsHtml(p.rating)} <span class="rc">${p.rating.toFixed(1)} · ${p.reviews} reviews</span></div>
+      <p class="qv-desc">${p.desc}</p>
+      <div class="price">${rupees(p.price)} <s>${rupees(p.mrp)}</s></div>
+      ${stockLine}
+      <div class="qv-actions">
+        <div class="qty-stepper">
+          <button data-action="qv-dec" aria-label="Decrease quantity">−</button>
+          <span>${qvQty}</span>
+          <button data-action="qv-inc" aria-label="Increase quantity">+</button>
+        </div>
+        <button class="add" data-action="qv-add" ${p.stock <= 0 ? "disabled" : ""}>${p.stock <= 0 ? "Sold out" : "Add to cart"}</button>
+      </div>
+      <button class="wish-link" data-action="qv-wish">${inWish ? "♥ Remove from wishlist" : "♡ Add to wishlist"}</button>
+    `;
+  }
+  function handleQuickViewAction(action) {
+    const p = products.find(x => x.id === currentQVId);
+    if (action === "qv-inc") { if (qvQty < p.stock) qvQty++; renderQuickView(); }
+    if (action === "qv-dec") { if (qvQty > 1) qvQty--; renderQuickView(); }
+    if (action === "qv-wish") { toggleWishlist(currentQVId); renderQuickView(); }
+    if (action === "qv-add") {
+      const ok = addToCart(currentQVId, qvQty);
+      if (!ok) { showToast("Sorry, that item is out of stock."); return; }
+      bumpBadge();
+      closeModal();
+      showToast(`${p.name} added to cart.`);
+    }
+  }
+
+  // ---- Wishlist modal ----
+  function renderWishlist() {
+    const items = products.filter(p => wishlist.has(p.id));
+    let html = `<button class="modal-close" data-action="close" aria-label="Close">×</button><h2>My Wishlist</h2>`;
+    if (items.length === 0) {
+      html += `<p class="empty">Your wishlist is empty. Tap the ♡ on any product to save it here.</p>`;
+    } else {
+      html += items.map(p => `
+        <div class="wish-row">
+          <img src="${p.img}" alt="${p.name}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'wr-icon',textContent:'${p.icon}'}))">
+          <div class="wr-info">
+            <div>${p.name}</div>
+            <div class="wr-price">${rupees(p.price)}</div>
+          </div>
+          <div class="wr-actions">
+            <button class="wr-add" data-action="wish-addcart" data-id="${p.id}" ${p.stock <= 0 ? "disabled" : ""}>${p.stock <= 0 ? "Sold out" : "Add to cart"}</button>
+            <button class="wr-remove" data-action="wish-remove" data-id="${p.id}">Remove</button>
+          </div>
+        </div>`).join("");
+    }
+    $("modalBox").innerHTML = html;
+  }
+  function handleWishlistAction(action, el) {
+    const id = Number(el.dataset.id);
+    if (action === "wish-remove") { toggleWishlist(id); renderWishlist(); }
+    if (action === "wish-addcart") {
+      const ok = addToCart(id, 1);
+      showToast(ok ? "Added to cart." : "Sorry, that item is out of stock.");
+      if (ok) bumpBadge();
+    }
+  }
+
+  // ---- Checkout (shipping -> payment -> review -> confirmation) ----
+  function readShippingForm() {
+    checkoutData.name = $("coName").value.trim();
+    checkoutData.phone = $("coPhone").value.trim();
+    checkoutData.address = $("coAddress").value.trim();
+    checkoutData.city = $("coCity").value.trim();
+    checkoutData.pincode = $("coPincode").value.trim();
+  }
+  function validateShipping() {
+    const d = checkoutData;
+    if (!d.name || !d.address || !d.city) return "Please fill in your name, address and city.";
+    if (!/^\d{10}$/.test(d.phone)) return "Enter a valid 10-digit phone number.";
+    if (!/^\d{6}$/.test(d.pincode)) return "Enter a valid 6-digit pincode.";
+    return null;
+  }
+  function stepLabel(n, label) {
+    return `<span class="${checkoutStep === n ? "active" : ""}">${n}. ${label}</span>`;
+  }
+  function renderCheckoutStep() {
+    const subtotal = cartSubtotal();
+    const discount = calcDiscount(subtotal);
+    const delivery = subtotal >= DELIVERY_FREE_ABOVE ? 0 : DELIVERY_FEE;
+    const total = subtotal - discount + delivery;
+    const steps = `<div class="co-steps">${stepLabel(1, "Address")} ${stepLabel(2, "Payment")} ${stepLabel(3, "Review")}</div>`;
+
+    if (checkoutStep === 1) {
+      const d = checkoutData;
+      $("modalBox").innerHTML = `
+        <button class="modal-close" data-action="close" aria-label="Close">×</button>
+        <h2>Checkout</h2>
+        ${steps}
+        <div class="co-form">
+          <label>Full name<input type="text" id="coName" value="${d.name}"></label>
+          <label>Phone number<input type="tel" id="coPhone" value="${d.phone}" placeholder="10-digit mobile number"></label>
+          <label>Address<input type="text" id="coAddress" value="${d.address}" placeholder="House no., street, area"></label>
+          <div class="co-row">
+            <label>City<input type="text" id="coCity" value="${d.city}"></label>
+            <label>Pincode<input type="text" id="coPincode" value="${d.pincode}" placeholder="6 digits"></label>
+          </div>
+        </div>
+        ${coError ? `<div class="co-error">${coError}</div>` : ""}
+        <div class="co-actions">
+          <button class="primary" data-action="co-next1">Continue</button>
+        </div>`;
+    } else if (checkoutStep === 2) {
+      $("modalBox").innerHTML = `
+        <button class="modal-close" data-action="close" aria-label="Close">×</button>
+        <h2>Checkout</h2>
+        ${steps}
+        <label class="pay-option"><input type="radio" name="payMethod" value="COD" ${checkoutData.payment === "COD" ? "checked" : ""}> Cash on Delivery</label>
+        <label class="pay-option"><input type="radio" name="payMethod" value="Card" ${checkoutData.payment === "Card" ? "checked" : ""}> Credit / Debit Card</label>
+        <label class="pay-option"><input type="radio" name="payMethod" value="UPI" ${checkoutData.payment === "UPI" ? "checked" : ""}> UPI</label>
+        <div class="co-actions">
+          <button class="secondary" data-action="co-back">Back</button>
+          <button class="primary" data-action="co-next2">Continue</button>
+        </div>`;
+    } else if (checkoutStep === 3) {
+      const itemsHtml = Object.keys(cart).map(id => {
+        const p = products.find(x => x.id === Number(id));
+        return `<div class="review-line"><span>${cart[id]} × ${p.name}</span><span>${rupees(p.price * cart[id])}</span></div>`;
+      }).join("");
+      $("modalBox").innerHTML = `
+        <button class="modal-close" data-action="close" aria-label="Close">×</button>
+        <h2>Checkout</h2>
+        ${steps}
+        <div class="review-block">
+          <h4>Deliver to</h4>
+          <div>${checkoutData.name} · ${checkoutData.phone}</div>
+          <div>${checkoutData.address}, ${checkoutData.city} - ${checkoutData.pincode}</div>
+        </div>
+        <div class="review-block">
+          <h4>Payment method</h4>
+          <div>${checkoutData.payment}</div>
+        </div>
+        <div class="review-block">
+          <h4>Order summary</h4>
+          ${itemsHtml}
+          <div class="review-line"><span>Subtotal</span><span>${rupees(subtotal)}</span></div>
+          ${discount > 0 ? `<div class="review-line"><span>Discount</span><span>−${rupees(discount)}</span></div>` : ""}
+          <div class="review-line"><span>Delivery</span><span>${delivery === 0 ? "FREE" : rupees(delivery)}</span></div>
+          <div class="review-line"><strong>Total</strong><strong>${rupees(total)}</strong></div>
+        </div>
+        <div class="co-actions">
+          <button class="secondary" data-action="co-back">Back</button>
+          <button class="primary" data-action="co-place">Place order</button>
+        </div>`;
+    } else if (checkoutStep === 4 && lastOrder) {
+      $("modalBox").innerHTML = `
+        <button class="modal-close" data-action="close" aria-label="Close">×</button>
+        <div class="confirm">
+          <div class="big-check">✅</div>
+          <h2>Order placed!</h2>
+          <div class="oid">Order #${lastOrder.id} · ${rupees(lastOrder.total)}</div>
+          <p>Thanks for shopping with Shopping Kart. Your order will arrive in 3-5 days.</p>
+          <div class="co-actions" style="justify-content:center; margin-top:1.2rem;">
+            <button class="secondary" data-action="co-vieworders">View orders</button>
+            <button class="primary" data-action="close">Continue shopping</button>
+          </div>
+        </div>`;
+    }
+  }
+  function genOrderId() {
+    return "SK" + Date.now().toString(36).toUpperCase().slice(-6);
+  }
+  function placeOrder() {
+    const subtotal = cartSubtotal();
+    const discount = calcDiscount(subtotal);
+    const delivery = subtotal >= DELIVERY_FREE_ABOVE ? 0 : DELIVERY_FEE;
+    const order = {
+      id: genOrderId(),
+      date: new Date().toISOString(),
+      items: Object.keys(cart).map(id => {
+        const p = products.find(x => x.id === Number(id));
+        return { id: p.id, name: p.name, qty: cart[id], price: p.price };
+      }),
+      subtotal, discount, delivery, total: subtotal - discount + delivery,
+      address: { ...checkoutData },
+      payment: checkoutData.payment,
+      coupon: appliedCoupon
+    };
+    orders.unshift(order);
+    saveOrders();
+    cart = {};
+    appliedCoupon = null;
+    couponMsg = null;
+    saveCart();
+    saveCoupon();
+    renderCart();
+    lastOrder = order;
+    checkoutStep = 4;
+    renderCheckoutStep();
+  }
+  function handleCheckoutAction(action) {
+    if (action === "co-next1") {
+      readShippingForm();
+      const err = validateShipping();
+      if (err) { coError = err; renderCheckoutStep(); return; }
+      coError = null;
+      checkoutStep = 2;
+      renderCheckoutStep();
+    } else if (action === "co-back") {
+      checkoutStep--;
+      renderCheckoutStep();
+    } else if (action === "co-next2") {
+      const checked = document.querySelector('input[name="payMethod"]:checked');
+      checkoutData.payment = checked ? checked.value : "COD";
+      checkoutStep = 3;
+      renderCheckoutStep();
+    } else if (action === "co-place") {
+      placeOrder();
+    } else if (action === "co-vieworders") {
+      openModal("orders");
+    }
+  }
+
+  // ---- Order history ----
+  function renderOrders() {
+    let html = `<button class="modal-close" data-action="close" aria-label="Close">×</button><h2>My Orders</h2>`;
+    if (orders.length === 0) {
+      html += `<p class="empty">No orders yet. Once you check out, your orders will show up here.</p>`;
+    } else {
+      html += orders.map(o => `
+        <div class="order-card">
+          <div class="order-head"><span>#${o.id}</span><span>${new Date(o.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span></div>
+          <div class="order-items">${o.items.map(it => `<div>${it.qty} × ${it.name}</div>`).join("")}</div>
+          <div class="order-total">Total: ${rupees(o.total)} · ${o.payment}</div>
+        </div>`).join("");
+    }
+    $("modalBox").innerHTML = html;
   }
 
   // ---- Start ----
+  applyTheme();
   renderCats();
   renderProducts();
   renderCart();
+  $("wishCount").textContent = wishlist.size;
 </script>
 </body>
 </html>
