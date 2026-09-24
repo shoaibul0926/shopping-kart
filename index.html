@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shopping Kart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cobalt: #1f3fbf;
+    --cobalt-dark: #142a85;
+    --sun: #ffd23f;
+    --paper: #fbfbf7;
+    --ink: #1a1c26;
+    --muted: #5e6275;
+    --line: #dfe1ea;
+    --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --receipt: "Courier Prime", "Courier New", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--display); background: var(--paper); color: var(--ink); line-height: 1.5; }
+  button { font: inherit; cursor: pointer; }
+  button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+
+  /* Header */
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--cobalt); color: #fff;
+    display: flex; align-items: center; gap: 1rem;
+    padding: .9rem clamp(1rem, 4vw, 3rem);
+  }
+  .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -.02em; display: flex; align-items: center; gap: .4rem; }
+  .logo span { background: var(--sun); color: var(--cobalt-dark); padding: 0 .35rem; border-radius: 4px; }
+  .search { flex: 1; max-width: 420px; margin-left: auto; }
+  .search input {
+    width: 100%; padding: .6rem .9rem; border: none; border-radius: 999px;
+    font: inherit; background: #fff; color: var(--ink);
+  }
+  .cart-btn {
+    background: var(--sun); color: var(--cobalt-dark); border: none;
+    padding: .55rem 1rem; border-radius: 999px; font-weight: 600;
+    display: flex; align-items: center; gap: .4rem;
+  }
+  .badge { background: var(--cobalt-dark); color: #fff; border-radius: 999px; min-width: 1.4rem; padding: 0 .35rem; font-size: .8rem; text-align: center; }
+  .badge.bump { animation: bump .3s ease; }
+  @keyframes bump { 50% { transform: scale(1.4); } }
+
+  /* Hero */
+  .hero {
+    background: var(--cobalt); color: #fff;
+    padding: 2.5rem clamp(1rem, 4vw, 3rem) 4rem;
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; align-items: center;
+  }
+  .hero h1 { font-size: clamp(2.2rem, 6vw, 4.2rem); line-height: 1.02; letter-spacing: -.03em; font-weight: 800; max-width: 14ch; }
+  .hero p { margin-top: 1rem; max-width: 42ch; opacity: .9; font-size: 1.1rem; }
+  .hero .shop-now {
+    margin-top: 1.5rem; background: var(--sun); color: var(--cobalt-dark);
+    border: none; padding: .8rem 1.6rem; border-radius: 999px; font-weight: 800; font-size: 1.05rem;
+  }
+  .trolley { font-size: clamp(6rem, 18vw, 12rem); text-align: center; line-height: 1; transform: rotate(-8deg); }
+
+  /* Categories */
+  .cats {
+    display: flex; gap: .5rem; flex-wrap: wrap;
+    margin: -1.5rem clamp(1rem, 4vw, 3rem) 0; position: relative;
+  }
+  .cats button {
+    background: #fff; border: 2px solid var(--ink); color: var(--ink);
+    padding: .5rem 1.1rem; border-radius: 999px; font-weight: 600;
+  }
+  .cats button.active { background: var(--ink); color: #fff; }
+
+  /* Products */
+  main { padding: 2rem clamp(1rem, 4vw, 3rem) 4rem; }
+  .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; gap: 1rem; flex-wrap: wrap; }
+  .toolbar h2 { font-size: 1.6rem; letter-spacing: -.02em; }
+  .toolbar select { padding: .45rem .7rem; border: 2px solid var(--line); border-radius: 8px; font: inherit; background: #fff; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.25rem; }
+  .product { background: #fff; border: 2px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+  .product .pic { font-size: 4.5rem; text-align: center; padding: 1.4rem 0; }
+  .product .info { padding: 0 1rem 1rem; display: flex; flex-direction: column; gap: .25rem; flex: 1; }
+  .product h3 { font-size: 1.05rem; font-weight: 600; }
+  .product .cat { color: var(--muted); font-size: .85rem; }
+  .product .row { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: .6rem; }
+  .price { font-weight: 800; font-size: 1.2rem; }
+  .price s { color: var(--muted); font-weight: 400; font-size: .85rem; margin-left: .3rem; }
+  .add { background: var(--cobalt); color: #fff; border: none; padding: .45rem .9rem; border-radius: 999px; font-weight: 600; }
+  .add:hover { background: var(--cobalt-dark); }
+  .add.added { background: #1d8a4e; }
+  .empty { grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--muted); }
+
+  /* Cart drawer — styled like a till receipt */
+  .overlay { position: fixed; inset: 0; background: rgba(20, 42, 133, .45); opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 20; }
+  .overlay.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed; top: 0; right: 0; height: 100%; width: min(400px, 100%);
+    background: var(--cobalt); z-index: 21; padding: 1.2rem;
+    transform: translateX(100%); transition: transform .3s ease;
+    display: flex; flex-direction: column;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-head { display: flex; justify-content: space-between; align-items: center; color: #fff; margin-bottom: 1rem; }
+  .drawer-head h2 { font-size: 1.4rem; }
+  .close { background: none; border: none; color: #fff; font-size: 1.8rem; line-height: 1; }
+  .receipt {
+    background: #fff; font-family: var(--receipt); padding: 1.2rem 1.1rem 1.6rem;
+    flex: 1; overflow-y: auto; position: relative;
+    -webkit-mask: radial-gradient(circle 7px at 50% 100%, transparent 98%, #000) 50% 100% / 18px 100% repeat-x;
+            mask: radial-gradient(circle 7px at 50% 100%, transparent 98%, #000) 50% 100% / 18px 100% repeat-x;
+  }
+  .receipt .store { text-align: center; font-weight: 700; font-size: 1.1rem; }
+  .receipt .date { text-align: center; font-size: .8rem; color: var(--muted); border-bottom: 2px dashed var(--ink); padding-bottom: .7rem; margin-bottom: .7rem; }
+  .line { display: grid; grid-template-columns: 1fr auto; gap: .2rem .5rem; padding: .5rem 0; border-bottom: 1px dotted var(--line); font-size: .9rem; }
+  .qty { display: flex; align-items: center; gap: .4rem; }
+  .qty button { width: 1.6rem; height: 1.6rem; border: 1.5px solid var(--ink); background: #fff; border-radius: 4px; font-family: var(--receipt); font-weight: 700; }
+  .remove { background: none; border: none; color: #b3261e; font-family: var(--receipt); font-size: .8rem; text-decoration: underline; justify-self: end; }
+  .totals { border-top: 2px dashed var(--ink); margin-top: .8rem; padding-top: .7rem; font-size: .9rem; }
+  .totals div { display: flex; justify-content: space-between; }
+  .totals .grand { font-weight: 700; font-size: 1.15rem; margin-top: .3rem; }
+  .cart-empty { text-align: center; padding: 2rem 0; }
+  .checkout {
+    margin-top: 1rem; background: var(--sun); color: var(--cobalt-dark); border: none;
+    padding: .9rem; border-radius: 999px; font-weight: 800; font-size: 1.05rem;
+  }
+  .checkout:disabled { opacity: .5; cursor: not-allowed; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translate(-50%, 150%);
+    background: var(--ink); color: #fff; padding: .7rem 1.2rem; border-radius: 999px;
+    transition: transform .25s; z-index: 30; font-weight: 600;
+  }
+  .toast.show { transform: translate(-50%, 0); }
+
+  footer { background: var(--ink); color: #c9cbd6; text-align: center; padding: 1.5rem; font-size: .9rem; }
+
+  @media (max-width: 700px) {
+    header { flex-wrap: wrap; }
+    .search { order: 3; max-width: none; flex-basis: 100%; }
+    .cart-btn { margin-left: auto; }
+    .hero { grid-template-columns: 1fr; }
+    .trolley { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🛒 Shopping <span>Kart</span></div>
+  <div class="search">
+    <input type="search" id="search" placeholder="Search products" aria-label="Search products">
+  </div>
+  <button class="cart-btn" id="openCart" aria-label="Open cart">
+    Cart <span class="badge" id="count">0</span>
+  </button>
+</header>
+
+<section class="hero">
+  <div>
+    <h1>Fill your kart, not your schedule.</h1>
+    <p>Groceries, gadgets and everyday things, delivered to your door. Free delivery on orders over ₹999.</p>
+    <button class="shop-now" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Start shopping</button>
+  </div>
+  <div class="trolley" aria-hidden="true">🛒</div>
+</section>
+
+<nav class="cats" id="cats" aria-label="Categories"></nav>
+
+<main id="products">
+  <div class="toolbar">
+    <h2 id="heading">All products</h2>
+    <select id="sort" aria-label="Sort products">
+      <option value="default">Sort: Featured</option>
+      <option value="low">Price: low to high</option>
+      <option value="high">Price: high to low</option>
+      <option value="name">Name: A to Z</option>
+    </select>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>© 2026 Shopping Kart. Made with HTML, CSS and JavaScript.</footer>
+
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-label="Your cart">
+  <div class="drawer-head">
+    <h2>Your cart</h2>
+    <button class="close" id="closeCart" aria-label="Close cart">×</button>
+  </div>
+  <div class="receipt" id="receipt"></div>
+  <button class="checkout" id="checkout">Place order</button>
+</aside>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+  const products = [
+    { id: 1,  name: "Fresh Bananas (1 dozen)", cat: "Groceries",   price: 60,    mrp: 75,    icon: "🍌" },
+    { id: 2,  name: "Red Apples (1 kg)",       cat: "Groceries",   price: 180,   mrp: 220,   icon: "🍎" },
+    { id: 3,  name: "Whole Wheat Bread",       cat: "Groceries",   price: 45,    mrp: 50,    icon: "🍞" },
+    { id: 4,  name: "Farm Eggs (12 pack)",     cat: "Groceries",   price: 90,    mrp: 96,    icon: "🥚" },
+    { id: 5,  name: "Wireless Headphones",     cat: "Electronics", price: 1999,  mrp: 3499,  icon: "🎧" },
+    { id: 6,  name: "Smartphone",              cat: "Electronics", price: 14999, mrp: 17999, icon: "📱" },
+    { id: 7,  name: "Laptop",                  cat: "Electronics", price: 45999, mrp: 52999, icon: "💻" },
+    { id: 8,  name: "Smart Watch",             cat: "Electronics", price: 2499,  mrp: 4999,  icon: "⌚" },
+    { id: 9,  name: "Cotton T-Shirt",          cat: "Fashion",     price: 399,   mrp: 799,   icon: "👕" },
+    { id: 10, name: "Denim Jeans",             cat: "Fashion",     price: 999,   mrp: 1799,  icon: "👖" },
+    { id: 11, name: "Running Shoes",           cat: "Fashion",     price: 1499,  mrp: 2999,  icon: "👟" },
+    { id: 12, name: "Backpack",                cat: "Fashion",     price: 799,   mrp: 1299,  icon: "🎒" },
+    { id: 13, name: "Coffee Mug",              cat: "Home",        price: 249,   mrp: 349,   icon: "☕" },
+    { id: 14, name: "Table Lamp",              cat: "Home",        price: 699,   mrp: 999,   icon: "💡" },
+    { id: 15, name: "Indoor Plant",            cat: "Home",        price: 349,   mrp: 449,   icon: "🪴" },
+    { id: 16, name: "Wall Clock",              cat: "Home",        price: 549,   mrp: 799,   icon: "🕰️" }
+  ];
+
+  const DELIVERY_FREE_ABOVE = 999;
+  const DELIVERY_FEE = 49;
+
+  let activeCat = "All";
+  let cart = loadCart();
+
+  const $ = id => document.getElementById(id);
+  const rupees = n => "₹" + n.toLocaleString("en-IN");
+
+  // ---- Save cart in the browser so it survives a page refresh ----
+  function loadCart() {
+    try { return JSON.parse(localStorage.getItem("shoppingKart")) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveCart() {
+    try { localStorage.setItem("shoppingKart", JSON.stringify(cart)); } catch (e) {}
+  }
+
+  // ---- Category buttons ----
+  function renderCats() {
+    const cats = ["All", ...new Set(products.map(p => p.cat))];
+    $("cats").innerHTML = cats.map(c =>
+      `<button class="${c === activeCat ? "active" : ""}" data-cat="${c}">${c}</button>`
+    ).join("");
+  }
+  $("cats").addEventListener("click", e => {
+    if (!e.target.dataset.cat) return;
+    activeCat = e.target.dataset.cat;
+    renderCats();
+    renderProducts();
+  });
+
+  // ---- Product grid ----
+  function renderProducts() {
+    const q = $("search").value.trim().toLowerCase();
+    let list = products.filter(p =>
+      (activeCat === "All" || p.cat === activeCat) &&
+      p.name.toLowerCase().includes(q)
+    );
+    const sort = $("sort").value;
+    if (sort === "low")  list.sort((a, b) => a.price - b.price);
+    if (sort === "high") list.sort((a, b) => b.price - a.price);
+    if (sort === "name") list.sort((a, b) => a.name.localeCompare(b.name));
+
+    $("heading").textContent = activeCat === "All" ? "All products" : activeCat;
+
+    if (list.length === 0) {
+      $("grid").innerHTML = `<p class="empty">No products match "${q}". Try another word or pick a different category.</p>`;
+      return;
+    }
+    $("grid").innerHTML = list.map(p => `
+      <article class="product">
+        <div class="pic" aria-hidden="true">${p.icon}</div>
+        <div class="info">
+          <h3>${p.name}</h3>
+          <span class="cat">${p.cat}</span>
+          <div class="row">
+            <span class="price">${rupees(p.price)}<s>${rupees(p.mrp)}</s></span>
+            <button class="add" data-id="${p.id}">Add</button>
+          </div>
+        </div>
+      </article>`).join("");
+  }
+  $("search").addEventListener("input", renderProducts);
+  $("sort").addEventListener("change", renderProducts);
+
+  $("grid").addEventListener("click", e => {
+    const btn = e.target.closest(".add");
+    if (!btn) return;
+    const id = Number(btn.dataset.id);
+    cart[id] = (cart[id] || 0) + 1;
+    saveCart();
+    renderCart();
+    btn.textContent = "Added ✓";
+    btn.classList.add("added");
+    setTimeout(() => { btn.textContent = "Add"; btn.classList.remove("added"); }, 900);
+    const badge = $("count");
+    badge.classList.remove("bump"); void badge.offsetWidth; badge.classList.add("bump");
+  });
+
+  // ---- Cart (receipt) ----
+  function renderCart() {
+    const ids = Object.keys(cart);
+    const itemCount = ids.reduce((sum, id) => sum + cart[id], 0);
+    $("count").textContent = itemCount;
+
+    const today = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+    let html = `<div class="store">SHOPPING KART</div><div class="date">${today}</div>`;
+
+    if (ids.length === 0) {
+      html += `<div class="cart-empty">Your cart is empty.<br>Add something to get started.</div>`;
+      $("receipt").innerHTML = html;
+      $("checkout").disabled = true;
+      return;
+    }
+
+    let subtotal = 0;
+    ids.forEach(id => {
+      const p = products.find(x => x.id === Number(id));
+      const lineTotal = p.price * cart[id];
+      subtotal += lineTotal;
+      html += `
+        <div class="line">
+          <span>${p.icon} ${p.name}</span>
+          <strong>${rupees(lineTotal)}</strong>
+          <div class="qty">
+            <button data-act="dec" data-id="${id}" aria-label="Decrease quantity">−</button>
+            <span>${cart[id]}</span>
+            <button data-act="inc" data-id="${id}" aria-label="Increase quantity">+</button>
+          </div>
+          <button class="remove" data-act="del" data-id="${id}">Remove</button>
+        </div>`;
+    });
+
+    const delivery = subtotal >= DELIVERY_FREE_ABOVE ? 0 : DELIVERY_FEE;
+    html += `
+      <div class="totals">
+        <div><span>Items (${itemCount})</span><span>${rupees(subtotal)}</span></div>
+        <div><span>Delivery</span><span>${delivery === 0 ? "FREE" : rupees(delivery)}</span></div>
+        <div class="grand"><span>TOTAL</span><span>${rupees(subtotal + delivery)}</span></div>
+      </div>`;
+    $("receipt").innerHTML = html;
+    $("checkout").disabled = false;
+  }
+
+  $("receipt").addEventListener("click", e => {
+    const { act, id } = e.target.dataset;
+    if (!act) return;
+    if (act === "inc") cart[id]++;
+    if (act === "dec") cart[id]--;
+    if (act === "del" || cart[id] <= 0) delete cart[id];
+    saveCart();
+    renderCart();
+  });
+
+  // ---- Open / close drawer ----
+  function openCart()  { $("drawer").classList.add("open");    $("overlay").classList.add("open"); }
+  function closeCart() { $("drawer").classList.remove("open"); $("overlay").classList.remove("open"); }
+  $("openCart").addEventListener("click", openCart);
+  $("closeCart").addEventListener("click", closeCart);
+  $("overlay").addEventListener("click", closeCart);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeCart(); });
+
+  // ---- Checkout ----
+  $("checkout").addEventListener("click", () => {
+    cart = {};
+    saveCart();
+    renderCart();
+    closeCart();
+    showToast("Order placed! Thanks for shopping with Shopping Kart.");
+  });
+
+  function showToast(msg) {
+    const t = $("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2500);
+  }
+
+  // ---- Start ----
+  renderCats();
+  renderProducts();
+  renderCart();
+</script>
+</body>
+</html>
