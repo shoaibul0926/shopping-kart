@@ -11,7 +11,7 @@
     --cobalt: #1f3fbf;
     --cobalt-dark: #142a85;
     --sun: #ffd23f;
-    --paper: #fbfbf7;
+    --paper: #eef2fb;
     --ink: #1a1c26;
     --muted: #5e6275;
     --line: #dfe1ea;
@@ -19,7 +19,7 @@
     --receipt: "Courier Prime", "Courier New", monospace;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--display); background: var(--paper); color: var(--ink); line-height: 1.5; }
+  body { font-family: var(--display); background-color: var(--paper); background-image: radial-gradient(#c9d3f0 1px, transparent 1px); background-size: 22px 22px; color: var(--ink); line-height: 1.5; }
   button { font: inherit; cursor: pointer; }
   button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
 
@@ -48,7 +48,7 @@
 
   /* Hero */
   .hero {
-    background: var(--cobalt); color: #fff;
+    background: linear-gradient(135deg, var(--cobalt) 0%, #3a5be0 55%, #6a4fd8 100%); color: #fff;
     padding: 2.5rem clamp(1rem, 4vw, 3rem) 4rem;
     display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; align-items: center;
   }
@@ -77,8 +77,11 @@
   .toolbar h2 { font-size: 1.6rem; letter-spacing: -.02em; }
   .toolbar select { padding: .45rem .7rem; border: 2px solid var(--line); border-radius: 8px; font: inherit; background: #fff; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.25rem; }
-  .product { background: #fff; border: 2px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
-  .product .pic { font-size: 4.5rem; text-align: center; padding: 1.4rem 0; }
+  .product { background: #fff; border: 2px solid #d4dbef; box-shadow: 0 6px 18px rgba(31, 63, 191, .08); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+  .product .pic { aspect-ratio: 4 / 3; background: #e8ecf8; overflow: hidden; }
+  .product .pic img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .35s ease; }
+  .product:hover .pic img { transform: scale(1.05); }
+  .product .pic.noimg { font-size: 4.5rem; display: grid; place-items: center; }
   .product .info { padding: 0 1rem 1rem; display: flex; flex-direction: column; gap: .25rem; flex: 1; }
   .product h3 { font-size: 1.05rem; font-weight: 600; }
   .product .cat { color: var(--muted); font-size: .85rem; }
@@ -199,22 +202,22 @@
 
 <script>
   const products = [
-    { id: 1,  name: "Fresh Bananas (1 dozen)", cat: "Groceries",   price: 60,    mrp: 75,    icon: "🍌" },
-    { id: 2,  name: "Red Apples (1 kg)",       cat: "Groceries",   price: 180,   mrp: 220,   icon: "🍎" },
-    { id: 3,  name: "Whole Wheat Bread",       cat: "Groceries",   price: 45,    mrp: 50,    icon: "🍞" },
-    { id: 4,  name: "Farm Eggs (12 pack)",     cat: "Groceries",   price: 90,    mrp: 96,    icon: "🥚" },
-    { id: 5,  name: "Wireless Headphones",     cat: "Electronics", price: 1999,  mrp: 3499,  icon: "🎧" },
-    { id: 6,  name: "Smartphone",              cat: "Electronics", price: 14999, mrp: 17999, icon: "📱" },
-    { id: 7,  name: "Laptop",                  cat: "Electronics", price: 45999, mrp: 52999, icon: "💻" },
-    { id: 8,  name: "Smart Watch",             cat: "Electronics", price: 2499,  mrp: 4999,  icon: "⌚" },
-    { id: 9,  name: "Cotton T-Shirt",          cat: "Fashion",     price: 399,   mrp: 799,   icon: "👕" },
-    { id: 10, name: "Denim Jeans",             cat: "Fashion",     price: 999,   mrp: 1799,  icon: "👖" },
-    { id: 11, name: "Running Shoes",           cat: "Fashion",     price: 1499,  mrp: 2999,  icon: "👟" },
-    { id: 12, name: "Backpack",                cat: "Fashion",     price: 799,   mrp: 1299,  icon: "🎒" },
-    { id: 13, name: "Coffee Mug",              cat: "Home",        price: 249,   mrp: 349,   icon: "☕" },
-    { id: 14, name: "Table Lamp",              cat: "Home",        price: 699,   mrp: 999,   icon: "💡" },
-    { id: 15, name: "Indoor Plant",            cat: "Home",        price: 349,   mrp: 449,   icon: "🪴" },
-    { id: 16, name: "Wall Clock",              cat: "Home",        price: 549,   mrp: 799,   icon: "🕰️" }
+    { id: 1,  name: "Fresh Bananas (1 dozen)", cat: "Groceries",   price: 60,    mrp: 75,    icon: "🍌", img: "images/bananas.jpg" },
+    { id: 2,  name: "Red Apples (1 kg)",       cat: "Groceries",   price: 180,   mrp: 220,   icon: "🍎", img: "images/apples.jpg" },
+    { id: 3,  name: "Whole Wheat Bread",       cat: "Groceries",   price: 45,    mrp: 50,    icon: "🍞", img: "images/bread.jpg" },
+    { id: 4,  name: "Farm Eggs (12 pack)",     cat: "Groceries",   price: 90,    mrp: 96,    icon: "🥚", img: "images/eggs.jpg" },
+    { id: 5,  name: "Wireless Headphones",     cat: "Electronics", price: 1999,  mrp: 3499,  icon: "🎧", img: "images/headphones.jpg" },
+    { id: 6,  name: "Smartphone",              cat: "Electronics", price: 14999, mrp: 17999, icon: "📱", img: "images/smartphone.jpg" },
+    { id: 7,  name: "Laptop",                  cat: "Electronics", price: 45999, mrp: 52999, icon: "💻", img: "images/laptop.jpg" },
+    { id: 8,  name: "Smart Watch",             cat: "Electronics", price: 2499,  mrp: 4999,  icon: "⌚", img: "images/smartwatch.jpg" },
+    { id: 9,  name: "Cotton T-Shirt",          cat: "Fashion",     price: 399,   mrp: 799,   icon: "👕", img: "images/tshirt.jpg" },
+    { id: 10, name: "Denim Jeans",             cat: "Fashion",     price: 999,   mrp: 1799,  icon: "👖", img: "images/jeans.jpg" },
+    { id: 11, name: "Running Shoes",           cat: "Fashion",     price: 1499,  mrp: 2999,  icon: "👟", img: "images/shoes.jpg" },
+    { id: 12, name: "Backpack",                cat: "Fashion",     price: 799,   mrp: 1299,  icon: "🎒", img: "images/backpack.jpg" },
+    { id: 13, name: "Coffee Mug",              cat: "Home",        price: 249,   mrp: 349,   icon: "☕", img: "images/mug.jpg" },
+    { id: 14, name: "Table Lamp",              cat: "Home",        price: 699,   mrp: 999,   icon: "💡", img: "images/lamp.jpg" },
+    { id: 15, name: "Indoor Plant",            cat: "Home",        price: 349,   mrp: 449,   icon: "🪴", img: "images/plant.jpg" },
+    { id: 16, name: "Wall Clock",              cat: "Home",        price: 549,   mrp: 799,   icon: "🕰️", img: "images/clock.jpg" }
   ];
 
   const DELIVERY_FREE_ABOVE = 999;
@@ -269,7 +272,7 @@
     }
     $("grid").innerHTML = list.map(p => `
       <article class="product">
-        <div class="pic" aria-hidden="true">${p.icon}</div>
+        <div class="pic"><img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.parentNode.classList.add('noimg'); this.parentNode.textContent='${p.icon}'"></div>
         <div class="info">
           <h3>${p.name}</h3>
           <span class="cat">${p.cat}</span>
